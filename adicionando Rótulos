@@ -1,0 +1,33 @@
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+nltk.download("vader_lexicon")
+import pandas as pd
+data = pd.read_csv("https://raw.githubusercontent.com/amankharwal/Website-data/master/reviews%20data.csv")
+data = data.dropna()
+
+#adicionando rótulos (Label)
+sentiments = SentimentIntensityAnalyzer()
+data["Positive"] = [sentiments.polarity_scores(i)["pos"] for i in data["Review"]]
+data["Negative"] = [sentiments.polarity_scores(i)["neg"] for i in data["Review"]]
+data["Neutral"] = [sentiments.polarity_scores(i)["neu"] for i in data["Review"]]
+data['Compound'] = [sentiments.polarity_scores(i)["compound"] for i in data["Review"]]
+data.head()
+
+#Pelo padrão da industria, se o compound score of sentiment is for maior que 0.05, Positive; Se menor que -0.05, Negative; outros casos, neutral.
+score = data["Compound"].values
+sentiment = []
+for i in score:
+    if i >= 0.05 :
+        sentiment.append('Positive')
+    elif i <= -0.05 :
+        sentiment.append('Negative')
+    else:
+        sentiment.append('Neutral')
+data["Sentiment"] = sentiment
+data.head()
+
+#ver frequencia dos rotulos
+print(data["Sentiment"].value_counts())
+
+#salvando dados novos
+data.to_csv("new_data.csv")
