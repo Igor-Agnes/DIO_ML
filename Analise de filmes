@@ -1,0 +1,35 @@
+#https://www.kaggle.com/account/login?titleType=dataset-downloads&showDatasetDownloadSkip=False&messageId=datasetsWelcome&returnUrl=%2Fdatasets%2Ftunguz%2Fmovietweetings%3Fresource%3Ddownload
+
+import numpy as np
+import pandas as pd
+movies = pd.read_csv("movies.dat", delimiter='::')
+print(movies.head())
+
+#definindo colunas
+movies.columns = ["ID", "Title", "Genre"]
+print(movies.head())
+
+#importando notas
+ratings = pd.read_csv("ratings.dat", delimiter='::')
+print(ratings.head())
+
+#nomeando colunas
+ratings.columns = ["User", "ID", "Ratings", "Timestamp"]
+print(ratings.head())
+
+#juntando datasets, o ID é comum a ambos
+data = pd.merge(movies, ratings, on=["ID", "ID"])
+print(data.head())
+
+#visualizar distribuição de notas
+ratings = data["Ratings"].value_counts()
+numbers = ratings.index
+quantity = ratings.values
+import plotly.express as px
+fig = px.pie(data, values=quantity, names=numbers)
+fig.show()
+
+#visualizar filmes com notas 10 pelos usuarios
+data2 = data.query("Ratings == 10")
+print(data2["Title"].value_counts().head(10))
+
