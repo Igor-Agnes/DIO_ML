@@ -1,0 +1,87 @@
+#dataset https://raw.githubusercontent.com/amankharwal/Website-data/master/water_potability.csv
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+import numpy as np
+
+data = pd.read_csv("water_potability.csv")
+data.head()
+
+#visualizar e remover valores nulos
+data = data.dropna()
+data.isnull().sum()
+
+#potavel
+plt.figure(figsize=(15, 10))
+sns.countplot(data.Potability)
+plt.title("Distribution of Unsafe and Safe Water")
+plt.show()
+
+#PH
+import plotly.express as px
+data = data
+figure = px.histogram(data, x = "ph", 
+                      color = "Potability", 
+                      title= "Factors Affecting Water Quality: PH")
+figure.show()
+
+#dureza
+figure = px.histogram(data, x = "Hardness", 
+                      color = "Potability", 
+                      title= "Factors Affecting Water Quality: Hardness")
+#solidos
+figure.show()
+
+figure = px.histogram(data, x = "Solids", 
+                      color = "Potability", 
+                      title= "Factors Affecting Water Quality: Solids")
+                      
+#cloro
+figure = px.histogram(data, x = "Chloramines", 
+                      color = "Potability", 
+                      title= "Factors Affecting Water Quality: Chloramines")
+figure.show()
+
+#sufato
+figure = px.histogram(data, x = "Sulfate", 
+                      color = "Potability", 
+                      title= "Factors Affecting Water Quality: Sulfate")
+figure.show()
+
+#condutividade
+figure = px.histogram(data, x = "Conductivity", 
+                      color = "Potability", 
+                      title= "Factors Affecting Water Quality: Conductivity")
+figure.show()
+
+#carbono
+figure = px.histogram(data, x = "Organic_carbon", 
+                      color = "Potability", 
+                      title= "Factors Affecting Water Quality: Organic Carbon")
+figure.show()
+
+#trihalometanos
+figure = px.histogram(data, x = "Trihalomethanes", 
+                      color = "Potability", 
+                      title= "Factors Affecting Water Quality: Trihalomethanes")
+figure.show()
+
+#turbidade
+figure = px.histogram(data, x = "Turbidity", 
+                      color = "Potability", 
+                      title= "Factors Affecting Water Quality: Turbidity")
+figure.show(
+
+#correlação
+correlation = data.corr()
+correlation["ph"].sort_values(ascending=False)
+
+#compara modelos
+from pycaret.classification import *
+clf = setup(data, target = "Potability", silent = True, session_id = 786)
+compare_models()
+
+#treinamento
+model = create_model("rf")
+predict = predict_model(model, data=data)
+predict.head()
