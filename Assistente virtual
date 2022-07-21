@@ -1,0 +1,143 @@
+#Instalar módulos, pelo terminal:
+#pip install pyttsx3 :biblioteca texto para voz que funciona offline
+#pip install SpeechRecognition :Converter áudio em texto
+#pip install webbrowser :interface que permite a amostra de documentos web para o usuário
+#pip install wikipedia :informações do site Wikipedia
+
+import pyttsx3
+import speech_recognition as sr
+import webbrowser
+import datetime
+import wikipedia
+
+
+# esse método para reconhecer comandos do modulo de voz
+def takeCommand():
+
+	r = sr.Recognizer()
+
+# do modulo speech_Recognition usa o microfone para ouvir os comandos
+with sr.Microphone() as source:
+		print('Listening')
+		
+		# segundos sem fala para que a frase seja considerada completa
+		r.pause_threshold = 0.7
+		audio = r.listen(source)
+		
+		# try and catch metodos para termos uma exceção caso o áudio não seja bom
+		try:
+			print("Recognizing")
+			
+			Query = r.recognize_google(audio, language='en-in')
+			print("the command is printed=", Query)
+			
+		except Exception as e:
+			print(e)
+			print("Say that again sir")
+			return "None"
+		
+		return Query
+
+def speak(audio):
+	
+	engine = pyttsx3.init()
+	# metodo getter (pega o valor atual da engine property)
+	voices = engine.getProperty('voices')
+	
+	# setter method .[0]=voz masculina and [1]=voz femenina.
+	engine.setProperty('voice', voices[1].id)
+	
+	# Metodo de fala do asistente
+	engine.say(audio)
+	
+	# bloqueio(espera) enquanto processando todas os comandos atuais
+	engine.runAndWait()
+
+def tellDay():
+	
+	# função diz o dia da semana
+	day = datetime.datetime.today().weekday() + 1
+	
+	#numero(chaves) que vai ajudar a dizer o dia da semana
+		Day_dict = {1: 'Monday', 2: 'Tuesday',
+				3: 'Wednesday', 4: 'Thursday',
+				5: 'Friday', 6: 'Saturday',
+				7: 'Sunday'}
+	
+	if day in Day_dict.keys():
+		day_of_the_week = Day_dict[day]
+		print(day_of_the_week)
+		speak("The day is " + day_of_the_week)
+
+
+def tellTime():
+	
+	# metodo para dizer o tempo(hora)
+	time = str(datetime.datetime.now())
+	
+	# a hora sera mostrada como assim "2020-06-05 17:50:14.582630"
+	print(time)
+	hour = time[11:13]
+	min = time[14:16]
+	speak(self, "The time is sir" + hour + "Hours and" + min + "Minutes")
+
+def Hello():
+	
+	# Função para quando o assitente é chamado
+	speak("hello sir I am your desktop assistant. /
+		Tell me how may I help you")
+
+
+def Take_query():
+
+	# chama a função Hello
+	Hello()
+	
+	# Loop infinito que pega as demandas continuamente ou ate "bye" ou encerramento do programa
+	while(True):
+		
+		# pega o comando e transforma em letras minúsculas, melhora acerto do output
+		query = takeCommand().lower()
+		if "open youtube" in query:
+			speak("Opening youtube")
+			
+			# método open damos o link para o website que será aberto
+			webbrowser.open("www.youtube.com")
+			continue
+		
+		elif "open google" in query:
+			speak("Opening Google ")
+			webbrowser.open("www.google.com")
+			continue
+			
+		elif "which day it is" in query:
+			tellDay()
+			continue
+		
+		elif "tell me the time" in query:
+			tellTime()
+			continue
+		
+		# sai e termina o programa 
+		elif "bye" in query:
+			speak("Bye. Have a nice day!")
+			exit()
+		
+		elif "from wikipedia" in query:
+			
+			# informação da Wikipédia
+			speak("Checking the wikipedia ")
+			query = query.replace("wikipedia", "")
+			
+			# resumo de 4 linhas da Wikipédia
+			result = wikipedia.summary(query, sentences=4)
+			speak("According to wikipedia")
+			speak(result)
+		
+		elif "tell me your name" in query:
+			speak("I am Demia. Your desktop Assistant")
+
+if __name__ == '__main__':
+	
+	# método para executar as funções
+	Take_query()
