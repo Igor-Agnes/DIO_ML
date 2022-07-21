@@ -1,0 +1,42 @@
+#bibliotecas, data do kaggle
+import numpy
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import classification_report
+
+data = pd.read_csv("https://raw.githubusercontent.com/amankharwal/Website-data/master/social.csv")
+print(data.head())
+
+#visulizar data e valores nulos
+print(data.describe())
+print(data.isnull().sum())
+
+#visualizar relação de idade e compra
+plt.figure(figsize=(15, 10))
+plt.title("Product Purchased By People Through Social Media Marketing")
+sns.histplot(x="Age", hue="Purchased", data=data)
+plt.show()
+
+#relação compra e salario
+plt.title("Product Purchased By People According to Their Income")
+sns.histplot(x="EstimatedSalary", hue="Purchased", data=data)
+plt.show()
+
+#treinar modelo, colocar a variavel "purchased"(comprado) na coluna do dataset e outras variaveis para treinamento
+x = np.array(data[["Age", "EstimatedSalary"]])
+y = np.array(data[["Purchased"]])
+
+#separar os dados e treinamento
+xtrain, xtest, ytrain, ytest = train_test_split(x, y, 
+                                                test_size=0.10, 
+                                                random_state=42)
+model = DecisionTreeClassifier()
+model.fit(xtrain, ytrain)
+predictions = model.predict(xtest)
+
+#visualizar classificação
+print(classification_report(ytest, predictions))
