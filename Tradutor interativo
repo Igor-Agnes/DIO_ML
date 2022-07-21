@@ -1,0 +1,11 @@
+from google_trans_new import google_translator
+import streamlit as st
+translator = google_translator()
+st.title("Language Translator")
+text = st.text_input("Enter a text")
+translate = translator.translate(text, lang_tgt='fr')
+st.write(translate)
+
+#Como estamos utilizando a biblioteca streamlit, precisamos executar o código usando  streamlit run file name.py no terminal.
+#Depois de rodar o arquivo um link vai abrir com a interface interativa.
+#No campo texto pode entrar qualquer língua, a mesma será traduzida para francês, pois "fr" foi a escolha no código acima 
