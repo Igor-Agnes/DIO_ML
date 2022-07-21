@@ -1,0 +1,24 @@
+import numpy
+actual = numpy.random.binomial(1, 0.9, size = 1000)
+predicted = numpy.random.binomial(1, 0.9, size = 1000)
+from sklearn import metrics
+confusion_matrix = metrics.confusion_matrix(actual, predicted)
+cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [False, True])
+import matplotlib.pyplot as plt
+cm_display.plot()
+plt.show()
+
+#acurácia (VP+VN)/N
+Accuracy = metrics.accuracy_score(actual, predicted)
+
+#precisão VP/(VP+FP)
+Precision = metrics.precision_score(actual, predicted)
+
+#F-score 2x(PxS/(P+S)
+F1_score = metrics.f1_score(actual, predicted)
+
+#sensibilidade VP/(VP+FN)
+Sensitivity_recall = metrics.recall_score(actual, predicted)
+
+#Especificidade VN/(FP+VN)
+Specificity = metrics.recall_score(actual, predicted, pos_label=0)
